@@ -32,7 +32,7 @@ public class UserSignUpBusinessService {
         userEntity.setAboutme(aboutme);
         userEntity.setDob(dob);
         userEntity.setRole("nonadmin");
-        userEntity.setContactNumber(contactNumber);
+        userEntity.setContactnumber(contactNumber);
 
         UserEntity existingUser = userDAO.getUserByUserName(userEntity.getUsername());
         if (existingUser != null) {
