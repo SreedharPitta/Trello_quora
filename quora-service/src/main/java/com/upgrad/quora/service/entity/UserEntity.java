@@ -1,13 +1,12 @@
 package com.upgrad.quora.service.entity;
 
-import org.apache.commons.lang3.builder.ToStringExclude;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Entity
-@Table(name = "users", schema = "quora")
+@Table(name = "users")
 @NamedQueries(
         {
                 @NamedQuery(name = "userByUuid", query = "select u from UserEntity u where u.uuid = :uuid"),
@@ -15,7 +14,7 @@ import javax.validation.constraints.Size;
                 @NamedQuery(name = "userByUserName", query = "select u from UserEntity u where u.username =:username")
         }
 )
-public class UserEntity {
+public class UserEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -40,7 +39,6 @@ public class UserEntity {
     @Size(max = 50)
     private String email;
 
-    @ToStringExclude
     @NotNull
     @Size(max = 255)
     private String password;
@@ -67,7 +65,7 @@ public class UserEntity {
 
     @NotNull
     @Size(max = 30)
-    private String contactNumber;
+    private String contactnumber;
 
     public Integer getId() {
         return id;
@@ -165,12 +163,12 @@ public class UserEntity {
         this.role = role;
     }
 
-    public String getContactNumber() {
-        return contactNumber;
+    public String getContactnumber() {
+        return contactnumber;
     }
 
-    public void setContactNumber(String contactNumber) {
-        this.contactNumber = contactNumber;
+    public void setContactnumber(String contactnumber) {
+        this.contactnumber = contactnumber;
     }
 
     @Override
@@ -188,7 +186,7 @@ public class UserEntity {
                 ", aboutme='" + aboutme + '\'' +
                 ", dob='" + dob + '\'' +
                 ", role='" + role + '\'' +
-                ", contactNumber='" + contactNumber + '\'' +
+                ", contactnumber='" + contactnumber + '\'' +
                 '}';
     }
 }

@@ -6,16 +6,17 @@ import org.hibernate.annotations.OnDeleteAction;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 @Entity
-@Table(name = "user_auth", schema = "quora")
+@Table(name = "user_auth")
 @NamedQueries({
         @NamedQuery(name = "userAuthByAccessToken", query = "select ua from UserAuthEntity ua where ua.accessToken = :accessToken ")
 })
-public class UserAuthEntity {
+public class UserAuthEntity implements Serializable {
 
-    @Column(name = "ID")
+    @Column(name = "id")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
