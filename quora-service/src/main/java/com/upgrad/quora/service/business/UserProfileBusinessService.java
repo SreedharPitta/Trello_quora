@@ -24,8 +24,8 @@ public class UserProfileBusinessService {
             if (userAuthEntity.getLogoutAt() != null) {
                 throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
             } else {
-                UserEntity userEntity = userAuthEntity.getUser();
-                if (userId.equals(userEntity.getUuid())) {
+                UserEntity userEntity = userDAO.getUser(userId);
+                if (userEntity != null) {
                     return userEntity;
                 } else {
                     throw new UserNotFoundException("USR-001", "User with entered uuid does not exist");
