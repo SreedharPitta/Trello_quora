@@ -20,7 +20,7 @@ public class UserSignOutBusinessService {
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity signOut(final String accessToken) throws SignOutRestrictedException {
         UserAuthEntity userAuthEntity = userDAO.getUserAuthToken(accessToken);
-        if (userAuthEntity == null) {
+        if (userAuthEntity == null || userAuthEntity.getLogoutAt() != null) {
             throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
         } else {
             final ZonedDateTime now = ZonedDateTime.now();
