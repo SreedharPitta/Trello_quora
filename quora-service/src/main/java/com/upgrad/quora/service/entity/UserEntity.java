@@ -20,6 +20,7 @@ public class UserEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
     @Size(max = 200)
     private String uuid;
 
