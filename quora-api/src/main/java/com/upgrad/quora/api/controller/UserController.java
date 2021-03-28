@@ -63,9 +63,8 @@ public class UserController {
     //User Sign Out End Point
     @RequestMapping(method = RequestMethod.POST, path = "/user/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<SignoutResponse> signout(@RequestHeader("authorization") final String authorization) throws SignOutRestrictedException {
-        String[] bearerToken = authorization.split("Bearer ");
-        final UserEntity userEntity = userSignOutBusinessService.signOut(bearerToken[1]);
-        SignoutResponse signoutResponse = new SignoutResponse().id(userEntity.getUuid()).message("User is not Signed in");
+        final UserEntity userEntity = userSignOutBusinessService.signOut(authorization);
+        SignoutResponse signoutResponse = new SignoutResponse().id(userEntity.getUuid()).message("SIGNED OUT SUCCESSFULLY");
         return new ResponseEntity<SignoutResponse>(signoutResponse, HttpStatus.OK);
     }
 }
