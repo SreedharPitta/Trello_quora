@@ -9,6 +9,8 @@ import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.Collection;
@@ -27,6 +29,7 @@ public class QuestionFetchBusinessService {
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
     //To get All Questions Posted by All Users
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<QuestionEntity> getAllQuestions(final String authorizationToken) throws AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorizationToken);
         if (userAuthEntity.getLogoutAt() != null) {
@@ -36,6 +39,7 @@ public class QuestionFetchBusinessService {
     }
 
     //To get All Questions Posted by a Single User
+    @Transactional(propagation = Propagation.REQUIRED)
     public List<QuestionEntity> getUserAllQuestions(String userId, String authorization) throws AuthorizationFailedException, UserNotFoundException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization);
         if (userAuthEntity.getLogoutAt() != null) {

@@ -8,6 +8,8 @@ import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class QuestionEditBusinessService {
@@ -18,6 +20,7 @@ public class QuestionEditBusinessService {
     @Autowired
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity editQuestion(final String questionId, final String authorization, final String content) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization);
         if (userAuthEntity.getLogoutAt() != null) {
