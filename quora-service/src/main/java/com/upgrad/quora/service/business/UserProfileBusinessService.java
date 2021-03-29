@@ -16,25 +16,16 @@ public class UserProfileBusinessService {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private UserAuthenticationBusinessService userAuthenticationBusinessService;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity getUser(final String userId, final String accessToken) throws UserNotFoundException, AuthorizationFailedException {
-        UserAuthEntity userAuthEntity = userDAO.getUserAuthToken(accessToken);
-        if (userAuthEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
-
-        } else {
-            //TODO Handle user logout case and double check the same
-            if (userAuthEntity.getLogoutAt() != null) {
-                throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to get user details");
-            } else {
-                UserEntity userEntity = userDAO.getUser(userId);
-                if (userEntity != null) {
-                    return userEntity;
-                } else {
-                    throw new UserNotFoundException("USR-001", "User with entered uuid does not exist");
-                }
-            }
+        UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(accessToken, "User is signed out.Sign in first to get user details");
+        UserEntity userEntity = userDAO.getUser(userId);
+        if (userEntity == null) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid does not exist");
         }
+        return userEntity;
     }
-
 }

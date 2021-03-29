@@ -20,23 +20,19 @@ public class QuestionEditBusinessService {
     @Autowired
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
+    @Autowired
+    private QuestionFetchBusinessService questionFetchBusinessService;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity editQuestion(final String questionId, final String authorization, final String content) throws AuthorizationFailedException, InvalidQuestionException {
-        UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization);
-        if (userAuthEntity.getLogoutAt() != null) {
-            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to edit the question");
+        UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization, "User is signed out.Sign in first to edit the question");
+        QuestionEntity questionEntity = questionFetchBusinessService.getQuestion(questionId, "Entered question uuid does not exist");
+        UserEntity user = userAuthEntity.getUser();
+        if (!user.getUuid().equals(questionEntity.getUser().getUuid())) {
+            throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
         }
-        QuestionEntity questionEntity = questionDAO.getQuestion(questionId);
-        if (questionEntity != null) {
-            UserEntity user = userAuthEntity.getUser();
-            if (user.getUuid().equals(questionEntity.getUser().getUuid())) {
-                QuestionEntity updatedQuestionEntity = questionDAO.editQuestion(questionEntity);
-                return updatedQuestionEntity;
-            } else {
-                throw new AuthorizationFailedException("ATHR-003", "Only the question owner can edit the question");
-            }
-        } else {
-            throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
-        }
+        questionEntity.setContent(content);
+        QuestionEntity updatedQuestionEntity = questionDAO.editQuestion(questionEntity);
+        return updatedQuestionEntity;
     }
 }

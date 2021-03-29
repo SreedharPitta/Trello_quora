@@ -22,12 +22,11 @@ public class UserSignOutBusinessService {
         UserAuthEntity userAuthEntity = userDAO.getUserAuthToken(accessToken);
         if (userAuthEntity == null || userAuthEntity.getLogoutAt() != null) {
             throw new SignOutRestrictedException("SGR-001", "User is not Signed in");
-        } else {
-            final ZonedDateTime now = ZonedDateTime.now();
-            userAuthEntity.setExpiresAt(now);
-            userAuthEntity.setLogoutAt(now);
-            UserAuthEntity updatedUserAuthEntity = userDAO.updateUserAuth(userAuthEntity);
-            return updatedUserAuthEntity.getUser();
         }
+        final ZonedDateTime now = ZonedDateTime.now();
+        userAuthEntity.setExpiresAt(now);
+        userAuthEntity.setLogoutAt(now);
+        UserAuthEntity updatedUserAuthEntity = userDAO.updateUserAuth(userAuthEntity);
+        return updatedUserAuthEntity.getUser();
     }
 }

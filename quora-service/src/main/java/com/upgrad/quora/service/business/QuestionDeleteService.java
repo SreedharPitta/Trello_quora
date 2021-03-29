@@ -20,23 +20,18 @@ public class QuestionDeleteService {
     @Autowired
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
+    @Autowired
+    private QuestionFetchBusinessService questionFetchBusinessService;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity deleteQuestion(final String questionId, final String authorization) throws AuthorizationFailedException, InvalidQuestionException {
-        UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization);
-        if (userAuthEntity.getLogoutAt() != null) {
-            throw new AuthorizationFailedException("ATHR-002", "User is signed out.Sign in first to delete a question");
+        UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization, "User is signed out.Sign in first to delete a question");
+        QuestionEntity questionEntity = questionFetchBusinessService.getQuestion(questionId, "Entered question uuid does not exist");
+        UserEntity user = userAuthEntity.getUser();
+        if (!user.getUuid().equals(questionEntity.getUser().getUuid()) && "nonadmin".equals(user.getRole())) {
+            throw new AuthorizationFailedException("ATHR-003", "Only the question owner or admin can delete the question");
         }
-        QuestionEntity questionEntity = questionDAO.getQuestion(questionId);
-        if (questionEntity != null) {
-            UserEntity user = userAuthEntity.getUser();
-            if (!user.getUuid().equals(questionEntity.getUser().getUuid()) || "nonadmin".equals(user.getRole())) {
-                throw new AuthorizationFailedException("ATHR-003", "Only the question owner or admin can delete the question");
-            } else {
-                questionDAO.deleteQuestion(questionEntity);
-            }
-        } else {
-            throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
-        }
+        questionDAO.deleteQuestion(questionEntity);
         return questionEntity;
     }
 }

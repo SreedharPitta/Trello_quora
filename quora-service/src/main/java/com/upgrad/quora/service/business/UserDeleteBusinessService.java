@@ -16,29 +16,21 @@ public class UserDeleteBusinessService {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private UserAuthenticationBusinessService userAuthenticationBusinessService;
+
     @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity userDelete(final String userId, final String accessToken) throws AuthorizationFailedException, UserNotFoundException {
-        UserAuthEntity userAuthEntity = userDAO.getUserAuthToken(accessToken);
-        if (userAuthEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
-        } else {
-            if (userAuthEntity.getLogoutAt() != null) {
-                throw new AuthorizationFailedException("ATHR-002", "User is signed out");
-            }
-            UserEntity adminUser = userAuthEntity.getUser();
-            if ("nonadmin".equals(adminUser.getRole())) {
-                throw new AuthorizationFailedException("ATHR-003", "Unauthorized Access, Entered user is not an admin");
-            } else {
-                UserEntity deleteUserEntity = userDAO.getUser(userId);
-                if (deleteUserEntity == null) {
-                    throw new UserNotFoundException("USR-001", "User with entered uuid to be deleted does not exist");
-                } else {
-                    userDAO.deleterUser(deleteUserEntity);
-                    return deleteUserEntity;
-                }
-            }
+        UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(accessToken, "User is signed out");
+        UserEntity adminUser = userAuthEntity.getUser();
+        if ("nonadmin".equals(adminUser.getRole())) {
+            throw new AuthorizationFailedException("ATHR-003", "Unauthorized Access, Entered user is not an admin");
         }
-
+        UserEntity deleteUserEntity = userDAO.getUser(userId);
+        if (deleteUserEntity == null) {
+            throw new UserNotFoundException("USR-001", "User with entered uuid to be deleted does not exist");
+        }
+        userDAO.deleterUser(deleteUserEntity);
+        return deleteUserEntity;
     }
-
 }

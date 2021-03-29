@@ -28,20 +28,18 @@ public class UserSignInBusinessService {
             throw new AuthenticationFailedException("ATH-001", "This username does not exist");
         }
         final String encryptedInputPassword = passwordCryptographyProvider.encrypt(password, userEntity.getSalt());
-        if (encryptedInputPassword.equals(userEntity.getPassword())) {
-            JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedInputPassword);
-            UserAuthEntity userAuthEntity = new UserAuthEntity();
-            userAuthEntity.setUuid(UUID.randomUUID().toString());
-            userAuthEntity.setUser(userEntity);
-            final ZonedDateTime now = ZonedDateTime.now();
-            final ZonedDateTime expiresAt = now.plusHours(8);
-            userAuthEntity.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
-            userAuthEntity.setLoginAt(now);
-            userAuthEntity.setExpiresAt(expiresAt);
-            return userDAO.createUserAuth(userAuthEntity);
-
-        } else {
+        if (!encryptedInputPassword.equals(userEntity.getPassword())) {
             throw new AuthenticationFailedException("ATH-002", "Password failed");
         }
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(encryptedInputPassword);
+        UserAuthEntity userAuthEntity = new UserAuthEntity();
+        userAuthEntity.setUuid(UUID.randomUUID().toString());
+        userAuthEntity.setUser(userEntity);
+        final ZonedDateTime now = ZonedDateTime.now();
+        final ZonedDateTime expiresAt = now.plusHours(8);
+        userAuthEntity.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
+        userAuthEntity.setLoginAt(now);
+        userAuthEntity.setExpiresAt(expiresAt);
+        return userDAO.createUserAuth(userAuthEntity);
     }
 }

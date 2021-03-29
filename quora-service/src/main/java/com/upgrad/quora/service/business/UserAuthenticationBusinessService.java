@@ -15,12 +15,15 @@ public class UserAuthenticationBusinessService {
     private UserDAO userDAO;
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public UserAuthEntity authenticateUser(final String accessToken) throws AuthorizationFailedException {
+    public UserAuthEntity authenticateUser(final String accessToken, final String message) throws AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userDAO.getUserAuthToken(accessToken);
         if (userAuthEntity == null) {
             throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
-        } else {
-            return userAuthEntity;
         }
+        //This is to check the logout time stamp is null or not
+        if (userAuthEntity.getLogoutAt() != null) {
+            throw new AuthorizationFailedException("ATHR-002", message);
+        }
+        return userAuthEntity;
     }
 }
