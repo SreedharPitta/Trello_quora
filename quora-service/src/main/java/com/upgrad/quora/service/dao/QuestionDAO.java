@@ -16,24 +16,24 @@ public class QuestionDAO {
     private EntityManager entityManager;
 
     //To Create a Question
-    public QuestionEntity createQuestion(QuestionEntity questionEntity) {
+    public QuestionEntity createQuestion(final QuestionEntity questionEntity) {
         entityManager.persist(questionEntity);
         return questionEntity;
     }
 
     //To Edit a Question
-    public QuestionEntity editQuestion(QuestionEntity questionEntity) {
+    public QuestionEntity editQuestion(final QuestionEntity questionEntity) {
         entityManager.merge(questionEntity);
         return questionEntity;
     }
 
     //To Delete a Question
-    public void deleteQuestion(QuestionEntity questionEntity) {
+    public void deleteQuestion(final QuestionEntity questionEntity) {
         entityManager.remove(questionEntity);
     }
 
     //To get a Single Question
-    public QuestionEntity getQuestion(String questionId) {
+    public QuestionEntity getQuestion(final String questionId) {
         try {
             return entityManager.createNamedQuery("questionByUuid", QuestionEntity.class).setParameter("uuid", questionId).getSingleResult();
         } catch (NoResultException nre) {
@@ -46,7 +46,7 @@ public class QuestionDAO {
         return entityManager.createNamedQuery("questions", QuestionEntity.class).getResultList();
     }
 
-    public List<QuestionEntity> getUserAllQuestions(UserEntity userEntity) {
+    public List<QuestionEntity> getUserAllQuestions(final UserEntity userEntity) {
         return entityManager.createNamedQuery("questionsByUser", QuestionEntity.class).setParameter("user", userEntity).getResultList();
     }
 }

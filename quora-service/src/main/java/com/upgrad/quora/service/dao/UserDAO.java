@@ -15,7 +15,7 @@ public class UserDAO {
     private EntityManager entityManager;
 
     //To create a User
-    public UserEntity createUser(UserEntity userEntity) {
+    public UserEntity createUser(final UserEntity userEntity) {
         entityManager.persist(userEntity);
         return userEntity;
     }
@@ -66,13 +66,13 @@ public class UserDAO {
     }
 
     //To Update User Auth
-    public UserAuthEntity updateUserAuth(UserAuthEntity userAuthEntity) {
+    public UserAuthEntity updateUserAuth(final UserAuthEntity userAuthEntity) {
         entityManager.merge(userAuthEntity);
         return userAuthEntity;
     }
 
     //To Delete User
-    public void deleterUser(UserEntity deleteUserEntity) {
+    public void deleterUser(final UserEntity deleteUserEntity) {
         entityManager.remove(deleteUserEntity);
     }
 }
