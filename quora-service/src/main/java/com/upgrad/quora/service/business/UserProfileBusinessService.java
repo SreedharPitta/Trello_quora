@@ -7,6 +7,8 @@ import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UserProfileBusinessService {
@@ -14,6 +16,7 @@ public class UserProfileBusinessService {
     @Autowired
     private UserDAO userDAO;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public UserEntity getUser(final String userId, final String accessToken) throws UserNotFoundException, AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userDAO.getUserAuthToken(accessToken);
         if (userAuthEntity == null) {
