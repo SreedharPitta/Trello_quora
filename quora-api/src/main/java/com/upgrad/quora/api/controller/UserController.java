@@ -56,7 +56,7 @@ public class UserController {
         UserEntity user = userAuthEntity.getUser();
         SigninResponse signinResponse = new SigninResponse().id(user.getUuid()).message("SIGNED IN SUCCESSFULLY");
         HttpHeaders headers = new HttpHeaders();
-        headers.add("access-token", userAuthEntity.getAccessToken());
+        headers.add("access_token", userAuthEntity.getAccessToken());
         return new ResponseEntity<SigninResponse>(signinResponse, headers, HttpStatus.OK);
     }
 
