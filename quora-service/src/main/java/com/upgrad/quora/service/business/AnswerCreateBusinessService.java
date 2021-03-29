@@ -8,6 +8,8 @@ import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
@@ -24,6 +26,7 @@ public class AnswerCreateBusinessService {
     @Autowired
     private QuestionFetchBusinessService questionFetchBusinessService;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity createAnswer(String questionId, String authorization, String answer) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization, "User is signed out.Sign in first to post an answer");
         QuestionEntity questionEntity = questionFetchBusinessService.getQuestion(questionId, "The question entered is invalid");

@@ -8,6 +8,8 @@ import com.upgrad.quora.service.exception.AnswerNotFoundException;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AnswerEditBusinessService {
@@ -18,6 +20,7 @@ public class AnswerEditBusinessService {
     @Autowired
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity editAnswer(String answerId, String authorization, String content) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization, "User is signed out.Sign in first to edit an answer");
         AnswerEntity answerEntity = answerDAO.getAnswer(answerId);

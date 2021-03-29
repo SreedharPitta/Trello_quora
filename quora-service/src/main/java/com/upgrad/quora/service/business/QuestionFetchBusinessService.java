@@ -29,6 +29,7 @@ public class QuestionFetchBusinessService {
     @Autowired
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity getQuestion(final String questionId, final String message) throws InvalidQuestionException {
         QuestionEntity questionEntity = questionDAO.getQuestion(questionId);
         if (questionEntity == null) {

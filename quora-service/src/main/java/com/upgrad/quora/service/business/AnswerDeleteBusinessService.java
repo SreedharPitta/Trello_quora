@@ -9,6 +9,8 @@ import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AnswerDeleteBusinessService {
@@ -19,6 +21,7 @@ public class AnswerDeleteBusinessService {
     @Autowired
     private UserAuthenticationBusinessService userAuthenticationBusinessService;
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity deleteAnswer(String answerId, String authorization) throws AuthorizationFailedException, AnswerNotFoundException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization, "User is signed out.Sign in first to delete an answer");
         AnswerEntity answerEntity = answerDAO.getAnswer(answerId);

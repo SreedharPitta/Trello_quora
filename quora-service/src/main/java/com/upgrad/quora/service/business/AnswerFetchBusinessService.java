@@ -8,6 +8,8 @@ import com.upgrad.quora.service.exception.AuthorizationFailedException;
 import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +27,7 @@ public class AnswerFetchBusinessService {
     @Autowired
     private QuestionFetchBusinessService questionFetchBusinessService;
 
-
+    @Transactional(propagation = Propagation.REQUIRED)
     public Map<QuestionEntity, List<AnswerEntity>> getQuestionAnswers(String questionId, String authorization) throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthEntity userAuthEntity = userAuthenticationBusinessService.authenticateUser(authorization, "User is signed out.Sign in first to get the answers");
         QuestionEntity questionEntity = questionFetchBusinessService.getQuestion(questionId, "The question with entered uuid whose details are to be seen does not exist");
