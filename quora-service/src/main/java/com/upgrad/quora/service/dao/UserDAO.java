@@ -50,11 +50,13 @@ public class UserDAO {
         }
     }
 
+    //To Create New User Auth
     public UserAuthEntity createUserAuth(final UserAuthEntity userAuthEntity) {
         entityManager.persist(userAuthEntity);
         return userAuthEntity;
     }
 
+    //To get User Auth by Access Token
     public UserAuthEntity getUserAuthToken(final String accessToken) {
         try {
             return entityManager.createNamedQuery("userAuthByAccessToken", UserAuthEntity.class).setParameter("accessToken", accessToken).getSingleResult();
@@ -63,11 +65,13 @@ public class UserDAO {
         }
     }
 
+    //To Update User Auth
     public UserAuthEntity updateUserAuth(UserAuthEntity userAuthEntity) {
         entityManager.merge(userAuthEntity);
         return userAuthEntity;
     }
 
+    //To Delete User
     public void deleterUser(UserEntity deleteUserEntity) {
         entityManager.remove(deleteUserEntity);
     }

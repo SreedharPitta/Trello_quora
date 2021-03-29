@@ -16,7 +16,7 @@ import java.time.ZonedDateTime;
 })
 public class UserAuthEntity implements Serializable {
 
-    @Column(name = "id")
+    @Column(name = "ID")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
